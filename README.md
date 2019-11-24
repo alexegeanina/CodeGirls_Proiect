@@ -56,13 +56,13 @@ O problemă mai delicată însă este decuplarea tot mai accentuată a software-
  <li> 1. </li>
   <img src="1.jpg" width="700" height="575" > 
 <li> 2. </li>
-<li>  <img src="2.jpg" width="700" height="575"> </li>
+ <img src="2.jpg" width="700" height="575"> 
 <li> 3. </li>
-<li>  <img src="3.jpg" width="700" height="575"> </li>
+  <img src="3.jpg" width="700" height="575"> 
 <li> 4. </li>
-<li>  <img src="4.jpg" width="700" height="575"> </li>
+  <img src="4.jpg" width="700" height="575"> 
 <li> 5. </li>
-<li>  <img src="5.jpg" width="700" height="575"> </li>
+  <img src="5.jpg" width="700" height="575"> 
 
 </body>
 

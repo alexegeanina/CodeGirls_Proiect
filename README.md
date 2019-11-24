@@ -54,7 +54,7 @@ O problemă mai delicată însă este decuplarea tot mai accentuată a software-
 <p>Alte produse similare pe piața sunt:Jira Software, Launchpad, Bugzilla, Trac, Sourceforge, Roundup, Mantis, RT,Debian BTS și BugNet.</p>
  <h3>Imagini </h3>
  <li> 1. </li>
-<li>  <img src="1.jpg" width="500" height="375"  </li>
+<li>  <img src="1.jpg" width="700" height="575"  </li>
 <li> 2. </li>
 <li>  <img src="2.jpg" width="300" height="275"> </li>
 <li> 3. </li>

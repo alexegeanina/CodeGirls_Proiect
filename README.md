@@ -16,7 +16,7 @@ O problemă mai delicată însă este decuplarea tot mai accentuată a software-
 <h4>Obiectivul nostru este de a realiza o aplicație  web care să permită gestionarea bug-urilor. În termeni mai exacți , aceasta va include următoarele funcțiuni:</h4>
 <dt>1. Logarea sau crearea unui nou cont.</dt>
 
-<p>2.Utilizatorul aplicației (tester/dezvoltator) își va crea un bilet (ticket) care se va deschide sub forma unui formular. Câmpurile formularului vor include:</p>
+<p>2. Utilizatorul aplicației (tester/dezvoltator) își va crea un bilet (ticket) care se va deschide sub forma unui formular. Câmpurile formularului vor include:</p>
 <ol>
 <li>Titlul bug-ului</li>
 <li>Descrierea acestuia</li>

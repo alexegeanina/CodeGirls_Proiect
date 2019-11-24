@@ -3,7 +3,7 @@
 <head>
 </head>
 <body>
-    <h3>Aplicație web pentru gestionarea rezolvării bug-urilor </h3>
+    <h3>Aplicație web pentru gestionarea rezolvării bug-urilor: Bye bye oversighting </h3>
 	<h4>Introducere:</h4>
 	<p>Un bug ,reprezintă o disfuncționalitate a unui sistem informatic (hardware sau software), disfuncţionalitate cauzată, cel mai adesea, de o eroare/omisiune în proiectare şi sesizată ulterior fie de către utilizatorii sistemului respectiv, fie chiar de către producător. 
 </p>

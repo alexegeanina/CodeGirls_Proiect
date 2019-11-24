@@ -22,7 +22,7 @@ O problemă mai delicată însă este decuplarea tot mai accentuată a software-
 <li>Descrierea acestuia</li>
 <ol>
 <li>Low->necesită rezolvarea bug-ului în câteva săptămâni,zile</li>
-<li> Medium->necesita rezolvarea bug-ului in cateva zile./li>
+<li> Medium->necesita rezolvarea bug-ului in cateva zile.</li>
 <li>High->necesită rezolvarea bug-ului în 2-3 zile</li>
 <li>Critical->necesită rezolvarea bug-ului într-o zi</li>
 <li>Hotfix->necesită rezolvarea bug-ului în cateva ore</li>

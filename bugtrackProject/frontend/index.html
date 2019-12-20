@@ -1,0 +1,100 @@
+<html>
+  <head>
+    <title>Bug Tracker</title>
+    <script src="https://unpkg.com/page/page.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.5.3/handlebars.js"></script>
+    <script crossorigin src="https://unpkg.com/react/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-router-dom/umd/react-router-dom.js"></script>
+    <script src="/js/fetch.umd.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="text/babel">
+    class Index extends React.Component
+    {
+      render() {
+        return <h1>Bugtracking</h1>;
+      }
+    }
+
+    class Login extends React.Component
+    {
+      constructor (props) {
+        super(props)
+        this.state = {
+          form: {
+            email: null,
+            password: null
+          }
+        }
+      }
+
+      handleInput = (fieldName) => {
+        return (e) => {
+          const newForm = {email: this.state.form.email, password: this.state.form.password}
+          newForm[fieldName] = e.target.value
+          this.setState({form: newForm})
+        }
+      }
+      render () {
+        return (
+          <form method="post" onSubmit={this.submit}>
+            Email: <input type="text" name="email" placeholder="ex: exemplu@mail.com" onChange={this.handleInput('email')} /><br/><br/>
+            Parola: <input type="password" name="password" placeholder="parola" onChange={this.handleInput('password')} /><br/><br/>
+            <input type="submit" value="Conectare" />
+          </form>
+        )
+      }
+      submit = (e) => {
+        e.preventDefault();
+        console.log('submitted')
+
+        fetch('/login-submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(this.state.form)
+        })
+      }
+    }
+
+    class NotFound extends React.Component
+    {
+      render () {
+        return (
+          <h1>
+            404 Not found
+          </h1>
+        )
+      }
+    }
+
+    class App extends React.Component
+    {
+      render() {
+        return <div>
+          <ul>
+            <li><ReactRouterDOM.Link to="/">Home</ReactRouterDOM.Link></li>
+            <li><ReactRouterDOM.Link to="/login">Login</ReactRouterDOM.Link></li>
+          </ul>
+          <ReactRouterDOM.Switch>
+            <ReactRouterDOM.Route path="/login"><Login/></ReactRouterDOM.Route>
+            <ReactRouterDOM.Route path="/" exact><Index/></ReactRouterDOM.Route>
+            <ReactRouterDOM.Route><NotFound/></ReactRouterDOM.Route>
+          </ReactRouterDOM.Switch>
+        </div>
+      }
+    }
+    function initReact() {
+      ReactDOM.render(
+        <ReactRouterDOM.BrowserRouter><App/></ReactRouterDOM.BrowserRouter>,
+        document.getElementById('root')
+      )
+    }
+    window.onload = initReact;
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

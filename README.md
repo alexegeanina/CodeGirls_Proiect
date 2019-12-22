@@ -63,6 +63,33 @@ O problemă mai delicată însă este decuplarea tot mai accentuată a software-
   <img src="4.jpg" width="700" height="575"> 
 <li> 5. </li>
   <img src="5.jpg" width="700" height="575"> 
+  
+</br></br></br>
+<h4>Instructiuni de pornire</h4></br>
+<p>Prima data trebuie creata baza de date dupa cum urmeaza:</p><br>
+CREATE DATABASE bug;<br>
+USE bug;<br>
+
+create table Projects( project_id int NOT NULL AUTO_INCREMENT, name_project varchar(50),repository_url varchar(100), PRIMARY KEY(project_id));  <br>
+
+create table Users( id_user int NOT NULL AUTO_INCREMENT, first_name varchar(50),last_name varchar(50),email varchar(100), role int null, PRIMARY KEY(id_user));  <br>
+create table Roles(  id_role INT NOT NULL AUTO_INCREMENT, title varchar(100), description varchar(200),PRIMARY KEY(id_role));  
+alter table Users ADD CONSTRAINT fk_role FOREIGN KEY(role) references Roles(id_role);<br>
+
+create table Tickets( id_ticket int NOT NULL  AUTO_INCREMENT, name_ticket varchar(50),project_id int NOT NULL,status varchar(100), severity varchar(100),id_user int NOT NULL, commit_url varchar(100), PRIMARY KEY( id_ticket )); <br> 
+
+alter table Tickets ADD CONSTRAINT fk_id_project FOREIGN KEY(project_id) references Projects(project_id);<br>
+alter table Tickets ADD CONSTRAINT fk_id_user FOREIGN KEY(id_user) references Users(id_user);<br>
+
+create table Users_projects( id_user_project int NOT NULL  AUTO_INCREMENT,user_id int NOT NULL, project_id int NOT NULL, PRIMARY KEY(id_user_project));<br>
+alter table Users_projects ADD CONSTRAINT fk_poject_id FOREIGN KEY(project_id) references Projects(project_id);<br>
+alter table Users_projects ADD CONSTRAINT fk_user_id FOREIGN KEY(user_id) references Users(id_user);<br><br>
+
+<p>In directorul config, in db.json se vor introduce userul si parola pentru baza de date.</p><br>
+
+</body>
+
+</html>
 
 </body>
 

@@ -57,6 +57,53 @@
         })
       }
     }
+    
+    class Register extends React.Component
+    {
+      constructor (props) {
+        super(props)
+        this.state = {
+          form: {
+            firstname: null,
+            lastname: null,
+            email: null,
+            password: null
+          }
+        }
+      }
+
+      handleInput = (fieldName) => {
+        return (e) => {
+          const newForm = {firstname: this.state.form.firstname, lastname: this.state.form.lastname, email: this.state.form.email, password: this.state.form.password}
+          newForm[fieldName] = e.target.value
+          this.setState({form: newForm})
+        }
+      }
+      render () {
+        return (
+          <form method="post" onSubmit={this.submit}>
+            Prenume: <input type="text" name="firstname" placeholder="prenume" onChange={this.handleInput('firstname')} /><br/><br/>
+            Nume: <input type="text" name="lastname" placeholder="nume" onChange={this.handleInput('lastname')} /><br/><br/>
+            Email: <input type="text" name="email" placeholder="ex: exemplu@mail.com" onChange={this.handleInput('email')} /><br/><br/>
+            Parola: <input type="password" name="password" placeholder="parola" onChange={this.handleInput('password')} /><br/><br/>
+            
+            <input type="submit" value="Inregistrare" />
+          </form>
+        )
+      }
+      submit = (e) => {
+        e.preventDefault();
+        console.log('submitted')
+
+        fetch('/register-submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(this.state.form)
+        })
+      }
+    }
 
     class NotFound extends React.Component
     {
@@ -76,9 +123,11 @@
           <ul>
             <li><ReactRouterDOM.Link to="/">Home</ReactRouterDOM.Link></li>
             <li><ReactRouterDOM.Link to="/login">Login</ReactRouterDOM.Link></li>
+            <li><ReactRouterDOM.Link to="/register">Register</ReactRouterDOM.Link></li>
           </ul>
           <ReactRouterDOM.Switch>
             <ReactRouterDOM.Route path="/login"><Login/></ReactRouterDOM.Route>
+            <ReactRouterDOM.Route path="/register"><Register/></ReactRouterDOM.Route>
             <ReactRouterDOM.Route path="/" exact><Index/></ReactRouterDOM.Route>
             <ReactRouterDOM.Route><NotFound/></ReactRouterDOM.Route>
           </ReactRouterDOM.Switch>

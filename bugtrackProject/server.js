@@ -30,6 +30,21 @@ app.post('/login-submit', function (request, response) {
   })
 })
 
+app.post('/register-submit', function (request, response) {
+  const formData = request.body;
+  console.log(formData);
+  // INSERT INTO Users SET email = ?, firstname = ?
+  db.query('INSERT INTO Users(first_name,last_name,email) VALUES (?, ?, ?)', [formData.firstname, formData.lastname, formData.email], function (error, results) {
+    if (error) {
+      response.status(500).send('Error in query')
+      return
+    }
+
+    console.log(results, results.length)
+    response.json({ok: true})
+  })
+})
+
 app.get('*', function (request, response, next) {
   if (/\.js$/.test(request.url)) {
     return next()

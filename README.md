@@ -73,8 +73,7 @@ USE bug;<br>
 create table Projects( project_id int NOT NULL AUTO_INCREMENT, name_project varchar(50),repository_url varchar(100), PRIMARY KEY(project_id));  <br>
 
 create table Users( id_user int NOT NULL AUTO_INCREMENT, first_name varchar(50),last_name varchar(50),email varchar(100), role int null, PRIMARY KEY(id_user));  <br>
-create table Roles(  id_role INT NOT NULL AUTO_INCREMENT, title varchar(100), description varchar(200),PRIMARY KEY(id_role));  
-alter table Users ADD CONSTRAINT fk_role FOREIGN KEY(role) references Roles(id_role);<br>
+alter table Users ADD COLUMN password varchar(25);<br>
 
 create table Tickets( id_ticket int NOT NULL  AUTO_INCREMENT, name_ticket varchar(50),project_id int NOT NULL,status varchar(100), severity varchar(100),id_user int NOT NULL, commit_url varchar(100), PRIMARY KEY( id_ticket )); <br> 
 

@@ -1,6 +1,7 @@
 <html>
   <head>
     <title>Bug Tracker</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
     <script src="https://unpkg.com/page/page.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.5.3/handlebars.js"></script>
     <script crossorigin src="https://unpkg.com/react/umd/react.development.js"></script>
@@ -9,10 +10,18 @@
     <script src="/js/fetch.umd.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script type="text/babel">
+    const appState = {
+      loggedIn: false,
+      userId: null
+    }
     class Index extends React.Component
     {
       render() {
-        return <h1>Bugtracking</h1>;
+        if (appState.loggedIn) {
+          return <h1>Bugtracking</h1>;
+        } else {
+          return <h1>Bugtracking</h1>;
+        }
       }
     }
 
@@ -21,6 +30,7 @@
       constructor (props) {
         super(props)
         this.state = {
+          loginSuccess: false,
           form: {
             email: null,
             password: null
@@ -36,6 +46,9 @@
         }
       }
       render () {
+        if (this.state.loginSuccess || appState.loggedIn) {
+          return (<ReactRouterDOM.Redirect to="/dashboard" />)
+        }
         return (
           <form method="post" onSubmit={this.submit}>
             Email: <input type="text" name="email" placeholder="ex: exemplu@mail.com" onChange={this.handleInput('email')} /><br/><br/>
@@ -48,12 +61,20 @@
         e.preventDefault();
         console.log('submitted')
 
-        fetch('/login-submit', {
+         fetch('/login-submit', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(this.state.form)
+        }).then(function (response) {
+          return response.json()
+        }).then((data) => {
+          if (data.loginSuccess) {
+            appState.loggedIn = true
+            appState.userId = data.userId
+            this.setState({loginSuccess: true})
+          }
         })
       }
     }
@@ -104,6 +125,337 @@
         })
       }
     }
+    
+    class MyProjects extends React.Component
+    {
+      constructor (props) {
+        super(props)
+        this.state = {
+          projectArray: []
+        }
+        fetch('/myprojects/' + appState.userId, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then(function (response) {
+          return response.json()
+        }).then((data) => {
+            this.setState({projectArray: data})
+        })
+      }
+
+      render () {
+        if (!appState.loggedIn) {
+          return (<ReactRouterDOM.Redirect to="/login" />)
+        }
+        
+        const listItems = this.state.projectArray.map((number,index) =>
+          <li key={index}><ReactRouterDOM.Link to={'/project/' + number.project_id}>{number.name_project}</ReactRouterDOM.Link></li>
+        );
+        return (
+          <div>
+          <ul>{listItems}</ul>
+          </div>
+        )
+      }
+    }
+    
+    class OtherProjects extends React.Component
+    {
+      constructor (props) {
+        super(props)
+        this.state = {
+          projectArray: []
+        }
+        fetch('/otherprojects/' + appState.userId, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then(function (response) {
+          return response.json()
+        }).then((data) => {
+            this.setState({projectArray: data})
+        })
+      }
+      
+      joinProject = (project_id) => {
+        return (e) => {
+          fetch('/joinproject/' + project_id, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({user_id: appState.userId})
+        })
+            
+        }
+      }
+      render () {
+        if (!appState.loggedIn) {
+          return (<ReactRouterDOM.Redirect to="/login" />)
+        }
+        
+        const listItems = this.state.projectArray.map((number,index) =>
+          <li key={index}>{number.name_project} <a href="#" onClick={this.joinProject(number.project_id)}>Join project</a></li>
+        );
+        return (
+          <div>
+          <ul>{listItems}</ul>
+          </div>
+        )
+      }
+    }
+    
+    class CreateProject extends React.Component
+    {
+      constructor (props) {
+        super(props)
+        this.state = {
+          form: {
+            projectname: null,
+            repourl: null
+          }
+        }
+      }
+
+      handleInput = (fieldName) => {
+        return (e) => {
+          const newForm = {projectname: this.state.form.projectname, repourl: this.state.form.repourl}
+          newForm[fieldName] = e.target.value
+          this.setState({form: newForm})
+        }
+      }
+      render () {
+        if (!appState.loggedIn) {
+          return (<ReactRouterDOM.Redirect to="/login" />)
+        }
+        return (
+          <form method="post" onSubmit={this.submit}>
+            Project name: <input type="text" name="projectname" placeholder="numele proiectului" onChange={this.handleInput('projectname')} /><br/><br/>
+            Repository URL: <input type="text" name="repourl" placeholder="link-ul catre repository" onChange={this.handleInput('repourl')} /><br/><br/>
+            
+            <input type="submit" value="Create project" />
+          </form>
+        )
+      }
+      submit = (e) => {
+        e.preventDefault();
+        console.log('submitted')
+
+        fetch('/createproject-submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(this.state.form)
+        })
+      }
+    }
+    
+    class CreateTicket extends React.Component
+    {
+      constructor (props) {
+        super(props)
+        this.state = {
+          projectArray: [],
+          form: {
+            ticketname: null,
+            project_id: null,
+            status: null,
+            severity: null,
+            commit_url: null
+          }
+        }
+        fetch('/myprojects/' + appState.userId, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then(function (response) {
+          return response.json()
+        }).then((data) => {
+            this.setState({projectArray: data})
+        })
+      }
+
+      handleInput = (fieldName) => {
+        return (e) => {
+          const newForm = {ticketname: this.state.form.ticketname, project_id: this.state.form.project_id, status: this.state.form.status, severity: this.state.form.severity, commit_url: this.state.form.commit_url}
+          newForm[fieldName] = e.target.value
+          this.setState({form: newForm})
+        }
+      }
+      render () {
+        if (!appState.loggedIn) {
+          return (<ReactRouterDOM.Redirect to="/login" />)
+        }
+        
+        const listItems = this.state.projectArray.map((number,index) =>
+          <option value={number.project_id} key={index}>{number.name_project}</option>
+        );
+        return (
+          <form method="post" onSubmit={this.submit}>
+            Ticket name: <input type="text" name="ticketname" placeholder="numele ticket-ului" onChange={this.handleInput('ticketname')}/><br/><br/>
+           
+            <select onChange={this.handleInput('project_id')}> <option>choose project</option>{listItems}</select> <br/><br/>
+            <select onChange={this.handleInput('status')}> 
+              <option>done</option>
+              <option>in progress</option>
+              <option>in testing</option>
+            </select> <br/><br/>
+            
+            <select onChange={this.handleInput('severity')}> 
+              <option>low</option>
+              <option>medium</option>
+              <option>high</option>
+              <option>critical</option>
+              <option>hotfix</option>
+            </select> <br/><br/>
+            
+             Commit URL: <input type="text" name="commit_url" placeholder="url" onChange={this.handleInput('commit_url')}/><br/><br/>
+            
+            
+            
+            <input type="submit" value="Create ticket" />
+          </form>
+        )
+      }
+      submit = (e) => {
+        e.preventDefault();
+        console.log('submitted')
+
+        fetch('/createticket-submit/'+ appState.userId, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(this.state.form)
+        })
+      }
+    }
+    
+    class Dashboard extends React.Component
+    {
+      render () {
+        if (!appState.loggedIn) {
+          return (<ReactRouterDOM.Redirect to="/login" />)
+        }
+        return (
+          <h1>
+            Conectat
+          </h1>
+        )
+      }
+    }
+    
+    class ProjectTickets extends React.Component
+    {
+      constructor (props) {
+        super(props)
+        this.state = {
+          ticketArray: []
+        }
+        fetch('/tickets/' + this.props.match.params.project_id, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then(function (response) {
+          return response.json()
+        }).then((data) => {
+            this.setState({ticketArray: data})
+        })
+      }
+
+      render () {
+        if (!appState.loggedIn) {
+          return (<ReactRouterDOM.Redirect to="/login" />)
+        }
+        const listItems = this.state.ticketArray.map((number,index) =>
+          <li key={index}><ReactRouterDOM.Link to={'/ticket/' + number.id_ticket}>{number.name_ticket}</ReactRouterDOM.Link></li>
+        );
+        return (
+          <div>
+          <ul>{listItems}</ul>
+          </div>
+        )
+      }
+    }
+    
+    class TicketEdit extends React.Component
+    {
+      constructor (props) {
+        super(props)
+        this.state = {
+          ticket: null,
+          form: {
+            ticketname: "",
+            status: "",
+            severity: "",
+            commit_url: ""
+          }
+        }
+        fetch('/ticket-info/' + this.props.match.params.ticket_id, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then(function (response) {
+          return response.json()
+        }).then((data) => {
+            this.setState({form: {ticketname: data.name_ticket, status: data.status, severity: data.severity, commit_url: data.commit_url}})
+        })
+      }
+      
+      handleInput = (fieldName) => {
+        return (e) => {
+          const newForm = {ticketname: this.state.form.ticketname, status: this.state.form.status, severity: this.state.form.severity, commit_url: this.state.form.commit_url}
+          newForm[fieldName] = e.target.value
+          this.setState({form: newForm})
+        }
+      }
+
+      render () {
+        if (!appState.loggedIn) {
+          return (<ReactRouterDOM.Redirect to="/login" />)
+        }
+        
+        
+        return (
+          <div>
+            <form method="post" onSubmit={this.submit}>
+            Ticket name: <input type="text" name="ticketname" placeholder="numele ticket-ului" value={this.state.form.ticketname} onChange={this.handleInput('ticketname')}/><br/><br/>
+            <select value={this.state.form.status} onChange={this.handleInput('status')}> 
+              <option value="done">done</option>
+              <option value="in progress">in progress</option>
+              <option value="in testing">in testing</option>
+            </select> <br/><br/>
+            
+            <select value={this.state.form.severity} onChange={this.handleInput('severity')}> 
+              <option value="low">low</option>
+              <option value="medium">medium</option>
+              <option value="high">high</option>
+              <option value="critical">critical</option>
+              <option value="hotfix">hotfix</option>
+            </select> <br/><br/>
+            
+             Commit URL: <input type="text" name="commit_url" placeholder="url" value={this.state.form.commit_url} onChange={this.handleInput('commit_url')}/><br/><br/>
+            
+            <input type="submit" value="Edit ticket" />
+          </form>
+          </div>
+        )
+      }
+      submit = (e) => {
+        e.preventDefault();
+        console.log('submitted')
+
+        fetch('/editticket-submit/' + this.props.match.params.ticket_id, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(this.state.form)
+        })
+      }
+    }
 
     class NotFound extends React.Component
     {
@@ -119,19 +471,31 @@
     class App extends React.Component
     {
       render() {
-        return <div>
+          return <div>
           <ul>
             <li><ReactRouterDOM.Link to="/">Home</ReactRouterDOM.Link></li>
             <li><ReactRouterDOM.Link to="/login">Login</ReactRouterDOM.Link></li>
             <li><ReactRouterDOM.Link to="/register">Register</ReactRouterDOM.Link></li>
+            <li><ReactRouterDOM.Link to="/myprojects">My Projects</ReactRouterDOM.Link></li>
+            <li><ReactRouterDOM.Link to="/otherprojects">Other Projects</ReactRouterDOM.Link></li>
+            <li><ReactRouterDOM.Link to="/createproject">Create Project</ReactRouterDOM.Link></li>
+            <li><ReactRouterDOM.Link to="/createticket">Create Ticket</ReactRouterDOM.Link></li>
           </ul>
           <ReactRouterDOM.Switch>
-            <ReactRouterDOM.Route path="/login"><Login/></ReactRouterDOM.Route>
-            <ReactRouterDOM.Route path="/register"><Register/></ReactRouterDOM.Route>
+            <ReactRouterDOM.Route path="/login" component={Login}></ReactRouterDOM.Route>
+            <ReactRouterDOM.Route path="/register" component={Register}></ReactRouterDOM.Route>
+            <ReactRouterDOM.Route path="/myprojects" component={MyProjects}></ReactRouterDOM.Route>
+            <ReactRouterDOM.Route path="/otherprojects" component={OtherProjects}></ReactRouterDOM.Route>
+            <ReactRouterDOM.Route path="/dashboard" component={Dashboard}></ReactRouterDOM.Route>
+            <ReactRouterDOM.Route path="/createproject" component={CreateProject}></ReactRouterDOM.Route>
+            <ReactRouterDOM.Route path="/createticket" component={CreateTicket}></ReactRouterDOM.Route>
+            <ReactRouterDOM.Route path="/project/:project_id" component={ProjectTickets}></ReactRouterDOM.Route>
+            <ReactRouterDOM.Route path="/ticket/:ticket_id" component={TicketEdit}></ReactRouterDOM.Route>
             <ReactRouterDOM.Route path="/" exact><Index/></ReactRouterDOM.Route>
             <ReactRouterDOM.Route><NotFound/></ReactRouterDOM.Route>
           </ReactRouterDOM.Switch>
         </div>
+        
       }
     }
     function initReact() {

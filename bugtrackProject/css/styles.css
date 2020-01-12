@@ -1,0 +1,88 @@
+
+body{
+
+  background-color: #FFC;
+  font-family:times;
+
+
+}
+
+
+div {
+  width: 9000px;
+  height: 9000px;
+  background: transparent;
+  transition: width 2s;
+}
+
+h1{
+
+color:	C00;
+font-size: 20 px;
+font-family:times;
+font-variant: small-caps;
+
+
+}
+h2{
+
+color:C00;
+font-family:times;
+font-size: 40px;
+
+}
+
+h3{
+ 
+color:	red;
+font-size: 20px;
+font-family:times;
+font-variant: small-caps;
+
+}
+
+
+input[type=text] {
+  width: 300px;
+  padding: 10px 15px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 2px solid red;
+  border-radius: 4px;
+}
+input[type=password] {
+  width: 300px;
+  padding: 10px 15px;
+  margin: 8px 0;
+ box-sizing: border-box;
+  border: 2px solid red;
+  border-radius: 4px;
+  
+}
+input[type=submit] {
+  width:150px;
+  padding: 10px 22px;
+  position: absolute;
+  left: 70px;
+  border: 2px solid red;
+  border-radius: 4px;
+  background-color: red;
+}
+
+input[type=text]:focus {
+  border: 3px red;
+}
+input[type=password]:focus {
+  border: 3px red;
+}
+   li a{
+    color: red;
+	  text-decoration: none;
+    padding:7px;
+   }
+li a:hover {
+    background-color: red;
+    color:black;}
+ul {
+  list-style-type:none;
+}
